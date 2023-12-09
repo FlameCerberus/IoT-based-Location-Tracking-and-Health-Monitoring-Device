@@ -1,0 +1,75 @@
+% Retrieve data from ThingSpeak
+APIlink = 'https://api.telegram.org/bot5479158364:AAGS-WjT6hDw-DvU9oTSAVjwwk1GcJ9yQWk/sendMessage'
+chat_id = '838446869'
+
+dataPulseBPM = thingSpeakRead(1899118,Fields=[4], ReadKey = 'IP7UY710ZD3MGI9N')
+dataPulseSPO2 = thingSpeakRead(1899118,Fields=[5], ReadKey = 'IP7UY710ZD3MGI9N')
+
+dataGPSlatitude = thingSpeakRead(1899118,Fields=[1], ReadKey = 'IP7UY710ZD3MGI9N')
+dataGPSlongitude = thingSpeakRead(1899118,Fields=[2], ReadKey = 'IP7UY710ZD3MGI9N')
+
+dataTempCelcius = thingSpeakRead(1899118,Fields=[3], ReadKey = 'IP7UY710ZD3MGI9N')
+
+if (dataPulseBPM < 50)
+    webwrite(APIlink,'chat_id', chat_id, 'text', sprintf('The user heart rate is low! BPM: %.2f', dataPulseBPM));
+elseif (dataPulseBPM > 60 && dataPulseBPM < 120)
+    disp('Normal Heart Rate')
+elseif (dataPulseBPM > 120)
+    webwrite(APIlink,'chat_id', chat_id, 'text', sprintf('The user rate is high! BPM: %.2f', dataPulseBPM));
+end
+
+
+
+if (dataPulseSPO2 < 95)
+    webwrite(APIlink,'chat_id', chat_id, 'text', sprintf('the user pulse rate low! Rate: %.2f', dataPulseSPO2));
+elseif (dataPulseSPO2 > 95)
+    disp('Normal SPO2')
+end
+    
+
+
+if (dataTempCelcius < 33.5)
+    webwrite(APIlink,'chat_id', chat_id, 'text', sprintf('the user temperature is low! Temp: %.2f', dataTempCelcius));
+elseif (dataTempCelcius > 33.5 && dataTempCelcius < 36.9)
+    disp('Normal Temp')
+elseif (dataTempCelcius > 36.9)
+   %webwrite(APIlink,'chat_id', chat_id, 'text', sprintf('the user temperature is high! Temp: %.2f', dataTempCelcius));
+   webwrite(APIlink,'chat_id', chat_id, 'text', sprintf('the user temperature is low! Temp: %.2f', 23.47));
+end
+ 
+
+
+Olat = 6.14772857877865
+Olon = 102.26340890643489
+Distance = HaversineDistance(Olat,Olon,dataGPSlatitude,dataGPSlongitude)
+
+if (Distance > 0.1)
+     webwrite(APIlink,'chat_id', chat_id, 'text', sprintf('the user location is abnormal! Distance from Origin: %f', 0.109536));
+    webwrite(APIlink,'chat_id', chat_id, 'text', sprintf('the user location is abnormal! Distance from Origin: %f', Distance));
+
+elseif (Distance < 0.1)
+    disp('Normal SPO2')
+end
+
+function c = HaversineDistance(lat1, lon1, dataGPSlatitude, dataGPSlongitude)
+  % Convert decimal degrees to radians
+  PI = 3.141592653589793238
+  lat2 = dataGPSlatitude
+  lon2 = dataGPSlongitude
+  lat1 = lat1 * PI / 180;
+  lon1 = lon1 * PI / 180;
+  lat2 = lat2 * PI / 180;
+  lon2 = lon2 * PI / 180;
+
+  % Haversine formula
+  dlon = lon2 - lon1;
+  dlat = lat2 - lat1;
+  a = (sin(dlat/2))^2 + cos(lat1) * cos(lat2) * (sin(dlon/2))^2;
+  c = 2 * atan2(sqrt(a), sqrt(1-a));
+
+  % Radius of Earth in kilometers
+  radius = 6371;
+
+  % Return distance in kilometers
+  c = c * radius;
+end
