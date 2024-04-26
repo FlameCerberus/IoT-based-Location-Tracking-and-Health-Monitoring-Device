@@ -61,8 +61,6 @@ This project aims to provide a comprehensive health and location tracking soluti
 #### ThingSpeak Channel Link:
 [Link to ThingSpeak Channel](#)
 
-[Include screenshots or visualizations from ThingSpeak if available.]
-
 ### Telegram Notification System
 
 - The system incorporates a Telegram-based alert system for immediate notifications based on abnormal health parameters or locations.
@@ -70,12 +68,8 @@ This project aims to provide a comprehensive health and location tracking soluti
 #### Telegram Alert Example:
 ![Telegram Notification Example](path/to/telegram_notification.png)
 
-[Include any relevant details or explanations regarding the Telegram notification system.]
 
 ## Acknowledgements
-
-- Mention any external libraries, tools, or code snippets you used in the project.
-- Give credit to the authors of libraries or tools you relied on.
 
 ## Author
 
